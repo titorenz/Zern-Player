@@ -4,7 +4,8 @@ import { useAudio } from '../contexts/AudioPlayerContext';
 import { usePlaylists } from '../contexts/PlaylistContext';
 import { Song } from '../types';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Slider, Button as PaperButton, Snackbar } from 'react-native-paper'; // Removed useTheme from here
+import Slider from '@react-native-community/slider';
+import { Button as PaperButton, Snackbar } from 'react-native-paper'; // Removed Slider from here
 import { useAppTheme } from '../contexts/ThemeContext'; // Import useAppTheme
 import LyricsDisplay from '../components/LyricsDisplay';
 import LyricsEditor from '../components/LyricsEditor';
@@ -161,13 +162,13 @@ const PlayerScreen = () => {
                     <MaterialCommunityIcons name={isLooping ? "repeat-once" : "repeat"} size={28} color={isLooping ? theme.colors.primary : theme.colors.onSurface} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={playPreviousSong} style={styles.controlButton} disabled={!currentSong || !canSkipPrevious}>
-                    <MaterialCommunityIcons name="skip-previous" size={36} color={(!currentSong || !canSkipPrevious) ? theme.colors.disabled : theme.colors.onSurface} />
+                    <MaterialCommunityIcons name="skip-previous" size={36} color={(!currentSong || !canSkipPrevious) ? ((theme.colors as any).disabled || '#aaa') : theme.colors.onSurface} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={isPlaying ? pause : play} style={[styles.controlButton, styles.playButton]} disabled={!currentSong}>
-                    <MaterialCommunityIcons name={isPlaying ? "pause-circle" : "play-circle"} size={64} color={!currentSong ? theme.colors.disabled : theme.colors.onSurface} />
+                    <MaterialCommunityIcons name={isPlaying ? "pause-circle" : "play-circle"} size={64} color={!currentSong ? ((theme.colors as any).disabled || '#aaa') : theme.colors.onSurface} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={playNextSong} style={styles.controlButton} disabled={!currentSong || !canSkipNext}>
-                    <MaterialCommunityIcons name="skip-next" size={36} color={(!currentSong || !canSkipNext) ? theme.colors.disabled : theme.colors.onSurface} />
+                    <MaterialCommunityIcons name="skip-next" size={36} color={(!currentSong || !canSkipNext) ? ((theme.colors as any).disabled || '#aaa') : theme.colors.onSurface} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => { /* TODO: Shuffle */ }} style={styles.controlButton}>
                     <MaterialCommunityIcons name="shuffle-variant" size={28} color={theme.colors.onSurface} />

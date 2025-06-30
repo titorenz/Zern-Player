@@ -1,14 +1,17 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, Theme as NavigationTheme, DefaultTheme } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAppTheme } from '../contexts/ThemeContext';
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import type { ParamListBase } from '@react-navigation/native';
 
 // Screens
 import PlayerScreen from '../screens/PlayerScreen';
 import PlaylistsScreen from '../screens/PlaylistsScreen';
 import SongLibraryScreen from '../screens/SongLibraryScreen';
 import PlaylistDetailScreen from '../screens/PlaylistDetailScreen'; // Will be part of a stack eventually
+import PlaylistsStack from './PlaylistsStack';
 
 // For now, PlaylistDetailScreen won't be directly in tabs.
 // We'll need a StackNavigator for the Playlists tab to include PlaylistDetailScreen.
@@ -17,17 +20,25 @@ import PlaylistDetailScreen from '../screens/PlaylistDetailScreen'; // Will be p
 
 const Tab = createMaterialBottomTabNavigator();
 
-// Dummy component for PlaylistDetail placeholder in tab (will be replaced by stack)
-// const PlaylistsStack = () => {
-//   // This would be a StackNavigator in a real setup
-//   return <PlaylistsScreen onNavigateToPlaylistDetail={(id) => console.log("Navigate to detail: ", id)} />;
-// }
-
 const AppNavigator = () => {
   const { theme, isDarkTheme } = useAppTheme();
 
+  // Extend theme to match NavigationTheme requirements
+  const navigationTheme: NavigationTheme = {
+    ...DefaultTheme,
+    ...theme,
+    colors: {
+      ...DefaultTheme.colors,
+      ...theme.colors,
+      card: (theme.colors as any).card || theme.colors.surface || '#fff',
+      text: (theme.colors as any).text || '#000',
+      border: (theme.colors as any).border || '#ccc',
+      notification: (theme.colors as any).notification || theme.colors.primary || '#f00',
+    },
+  };
+
   return (
-    <NavigationContainer theme={theme}>
+    <NavigationContainer theme={navigationTheme}>
       <Tab.Navigator
         initialRouteName="Player"
         activeColor={theme.colors.primary}
@@ -56,10 +67,8 @@ const AppNavigator = () => {
           }}
         />
         <Tab.Screen
-          name="PlaylistsTab" // Changed name to avoid conflict if a screen is also named "Playlists"
-          // For now, directly using PlaylistsScreen. Later, this will be a StackNavigator.
-          // The onNavigateToPlaylistDetail prop will need to be handled by the navigation system.
-          component={PlaylistsScreen}
+          name="PlaylistsTab"
+          component={PlaylistsStack}
           options={{
             tabBarLabel: 'Playlists',
             tabBarIcon: ({ color }) => (

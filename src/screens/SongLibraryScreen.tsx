@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
-import { Text, List, useTheme, ActivityIndicator, Searchbar, FAB, Portal, Dialog, Checkbox, Button as PaperButton, Appbar } from 'react-native-paper';
+import { Text, List, useTheme, ActivityIndicator, Searchbar, FAB, Portal, Dialog, Checkbox, Button as PaperButton, Appbar, IconButton } from 'react-native-paper';
 import { usePlaylists } from '../contexts/PlaylistContext';
 import { useAudio } from '../contexts/AudioPlayerContext';
 import { useAppTheme } from '../contexts/ThemeContext';
@@ -15,7 +15,8 @@ interface SongLibraryScreenProps {
 }
 
 const SongLibraryScreen: React.FC<SongLibraryScreenProps> = () => {
-  const { playSongFromQueue, playerState, playlists, addSongToPlaylist, loadPlaylists } = usePlaylists();
+  const { playSongFromQueue, playlists, addSongToPlaylist, loadPlaylists } = usePlaylists();
+  const { playerState } = useAudio();
   const { theme } = useAppTheme();
   const paperTheme = useTheme();
 

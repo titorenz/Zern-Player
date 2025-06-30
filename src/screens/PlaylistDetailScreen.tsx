@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, FlatList, Alert, TouchableOpacity } from 'react-native';
-import { Text, List, useTheme, FAB, ActivityIndicator, Divider, Appbar, Menu } from 'react-native-paper';
+import { Text, List, useTheme, FAB, ActivityIndicator, Divider, Appbar, Menu, IconButton } from 'react-native-paper';
 import { usePlaylists } from '../contexts/PlaylistContext';
 import { useAudio } from '../contexts/AudioPlayerContext';
 import { useAppTheme } from '../contexts/ThemeContext';
@@ -17,12 +17,8 @@ interface PlaylistDetailScreenProps {
 }
 
 const PlaylistDetailScreen: React.FC<PlaylistDetailScreenProps> = ({ playlistId, onBack }) => {
-  const {
-    removeSongFromPlaylist,
-    playSongFromQueue,
-    currentQueue,
-    playerState
-  } = usePlaylists(); // Using usePlaylists for queue management
+  const { playlists, removeSongFromPlaylist, playSongFromQueue, currentQueue } = usePlaylists(); // Get playlists at the top
+  const { playerState } = useAudio();
   const { theme } = useAppTheme();
   const paperTheme = useTheme();
 
@@ -96,8 +92,6 @@ const PlaylistDetailScreen: React.FC<PlaylistDetailScreenProps> = ({ playlistId,
       playSongFromQueue(song, playlist.songs, index);
     }
   };
-
-  const { playlists } = usePlaylists(); // Get playlists from context to ensure it's up-to-date
 
   const renderSongItem = ({ item, index }: { item: Song, index: number }) => {
     const isPlayingThisSong = playerState.currentSong?.id === item.id && playerState.isPlaying;

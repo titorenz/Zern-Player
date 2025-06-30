@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Audio } from 'expo-av';
+import { Audio, AVPlaybackStatus } from 'expo-av';
 import { Song, PlayerState } from '../types';
 
 const useAudioPlayer = () => {
@@ -54,7 +54,7 @@ const useAudioPlayer = () => {
     }
   };
 
-  const onPlaybackStatusUpdate = (status: Audio.PlaybackStatus) => {
+  const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => {
     if (status.isLoaded) {
       setPlayerState(prev => ({
         ...prev,

@@ -2,51 +2,56 @@ import React, { createContext, useState, useContext, ReactNode, useMemo } from '
 import { MD3DarkTheme, MD3LightTheme, PaperProvider, adaptNavigationTheme } from 'react-native-paper';
 import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme } from '@react-navigation/native';
 
-// Augment the Paper theme type to include our custom colors or properties if needed in future
-// import { MD3Theme } from 'react-native-paper';
-// interface ExtendedTheme extends MD3Theme {
-//   // custom properties
-// }
+// 1. Define custom color interface
+interface GlassColors {
+  glassBackgroundLight: string;
+  glassBorderLight: string;
+  glassBackgroundDark: string;
+  glassBorderDark: string;
+  border: string; // Add border as a custom color
+  notification: string; // Add notification as a custom color
+}
 
-export const CombinedDefaultTheme = {
+// 2. Extend the theme type
+import type { MD3Theme } from 'react-native-paper';
+export type AppTheme = MD3Theme & { colors: MD3Theme['colors'] & GlassColors };
+
+export const CombinedDefaultTheme: AppTheme = {
   ...MD3LightTheme,
   ...NavigationDefaultTheme,
   colors: {
     ...MD3LightTheme.colors,
     ...NavigationDefaultTheme.colors,
-    primary: '#6750A4', // Example primary, adjust as needed
+    primary: '#6750A4',
     background: '#F7F2FA',
-    card: '#EADDFF', // Usually surface for Paper
-    text: '#1C1B1F',
-    border: 'rgb(199, 199, 204)', // from navigation
-    notification: MD3LightTheme.colors.error, // or another color
-    // Glassmorphism specific colors (can be part of theme.colors or separate)
+    border: 'rgb(199, 199, 204)', // Now valid
+    notification: MD3LightTheme.colors.error, // Now valid
     glassBackgroundLight: 'rgba(255, 255, 255, 0.7)',
     glassBorderLight: 'rgba(0, 0, 0, 0.1)',
+    glassBackgroundDark: 'rgba(40, 40, 40, 0.75)', // Provide fallback for type safety
+    glassBorderDark: 'rgba(255, 255, 255, 0.15)',
   },
 };
 
-export const CombinedDarkTheme = {
+export const CombinedDarkTheme: AppTheme = {
   ...MD3DarkTheme,
   ...NavigationDarkTheme,
   colors: {
     ...MD3DarkTheme.colors,
     ...NavigationDarkTheme.colors,
-    primary: '#D0BCFF', // Example primary, adjust as needed
+    primary: '#D0BCFF',
     background: '#1C1B1F',
-    card: '#383240', // Usually surface for Paper
-    text: '#E6E1E5',
-    border: 'rgb(39, 39, 41)', // from navigation
-    notification: MD3DarkTheme.colors.error,
-    // Glassmorphism specific colors
-    glassBackgroundDark: 'rgba(40, 40, 40, 0.75)', // Slightly more opaque for dark
-    glassBorderDark: 'rgba(255, 255, 255, 0.15)', // Brighter border for dark
+    border: 'rgb(39, 39, 41)', // Now valid
+    notification: MD3DarkTheme.colors.error, // Now valid
+    glassBackgroundLight: 'rgba(255, 255, 255, 0.7)', // Provide fallback for type safety
+    glassBorderLight: 'rgba(0, 0, 0, 0.1)',
+    glassBackgroundDark: 'rgba(40, 40, 40, 0.75)',
+    glassBorderDark: 'rgba(255, 255, 255, 0.15)',
   },
 };
 
-
 interface ThemeContextType {
-  theme: typeof CombinedDefaultTheme | typeof CombinedDarkTheme;
+  theme: AppTheme;
   isDarkTheme: boolean;
   toggleTheme: () => void;
 }
@@ -54,13 +59,12 @@ interface ThemeContextType {
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [isDarkTheme, setIsDarkTheme] = useState(false); // Default to light theme
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
 
   const toggleTheme = () => {
     setIsDarkTheme(!isDarkTheme);
   };
 
-  // Memoize the theme object to prevent unnecessary re-renders
   const theme = useMemo(() => (isDarkTheme ? CombinedDarkTheme : CombinedDefaultTheme), [isDarkTheme]);
 
   return (
